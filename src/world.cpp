@@ -6,4 +6,7 @@ namespace spe
 
   }
 
+  void Gaia::LoadObject(Shape shape) {
+
+  }
 }
