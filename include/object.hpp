@@ -16,6 +16,8 @@ namespace spe
     Object(const uint32_t id, const Shape shape, raylib::Vector2 pos);
 
     void Draw() const;
+    [[nodiscard]] raylib::Vector2 GetPos() const {return m_pos;}
+    [[nodiscard]] constexpr int GetId() const {return m_id;}
 
   private:
     const uint32_t    m_id{};
