@@ -5,7 +5,7 @@
 
 enum class Shape 
 {
-  SQUARE, CIRCLE
+  SQUARE, CIRCLE, TRIANGLE
 };
 
 namespace spe 
