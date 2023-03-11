@@ -20,12 +20,14 @@ namespace spe
     [[nodiscard]] constexpr int GetId() const {return m_id;}
 
   private:
-    const uint32_t    m_id{};
-    const float       m_weight{};
-    const Shape       m_shape{};
-    raylib::Vector2   m_pos{};
-    raylib::Vector2   m_size{};
-    raylib::Vector2   m_direction{};
+    const uint32_t      m_id{};
+    const float         m_mass{};
+    float               m_acceleration{};
+    const Shape         m_shape{};
+    raylib::Vector2     m_pos{};
+    raylib::Vector2     m_size{};
+    raylib::Vector2     m_direction{};
+    std::vector<float>  m_velocity{};
 
     void CheckCollision();
   };
