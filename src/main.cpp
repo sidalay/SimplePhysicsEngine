@@ -4,6 +4,7 @@ int main(void)
 {
   // Initialization
   raylib::Vector2 window{800.f, 600.f};
+  spe::Gaia gaia{};
 
   InitWindow(window.x, window.y, "Simple Physics Engine");
   SetTraceLogLevel(LOG_NONE);
