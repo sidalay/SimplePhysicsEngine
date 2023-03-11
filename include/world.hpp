@@ -15,6 +15,7 @@ namespace spe
     Gaia();
 
     void LoadObject(Shape shape);
+    const std::vector<Object>& GetObjects() {return m_objects;}
     
   private:
     float               m_gravity{};
