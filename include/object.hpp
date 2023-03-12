@@ -13,7 +13,7 @@ namespace spe
   class Object 
   {
   public:
-    Object(const uint32_t id, const Shape shape, raylib::Vector2 pos);
+    Object(const uint32_t id, const Shape shape, raylib::Vector2 pos, raylib::Vector2 size);
 
     void Draw() const;
     [[nodiscard]] raylib::Vector2 GetPos() const {return m_pos;}
