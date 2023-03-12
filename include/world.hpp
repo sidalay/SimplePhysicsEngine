@@ -14,7 +14,8 @@ namespace spe
   public:
     Gaia();
 
-    void LoadObject(Shape shape);
+    void LoadObject(Object object);
+    void DrawObjects() const;
     const std::vector<Object>& GetObjects() {return m_objects;}
     
   private:
