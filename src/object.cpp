@@ -5,7 +5,8 @@ namespace spe
 
   Object::Object(
     const uint32_t id, 
-    const Shape shape, 
+    const Shape shape,
+    const RigidBody body, 
     raylib::Vector2 pos,
     raylib::Vector2 size
   ) 
