@@ -3,23 +3,29 @@
 
 #include <vector>
 #include <array>
+#include <algorithm>
 
 #include "object.hpp"
 
 namespace spe 
 {
-  class Gaia 
+  class World 
   {
 
   public:
-    Gaia();
+    World();
 
+    void Tick();
     void LoadObject(Object object);
+    void UnloadObject();
     void DrawObjects() const;
+    void TickObjects();
+    void EnforceGravity();
     const std::vector<Object>& GetObjects() {return m_objects;}
+    const int Instances() {return m_objects.size();}
     
   private:
-    float               m_gravity{};
+    const Force         m_gravity{2.f, 180.f};
     int                 m_total{};
     std::array<int, 3>  m_count{};
     std::vector<Object> m_objects{};
