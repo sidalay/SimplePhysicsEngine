@@ -14,7 +14,13 @@ namespace spe
     
   }
 
-  void Object::Draw() const {
+  void Object::Tick()
+  {
+    UpdatePos();
+  }
+
+  void Object::Draw() const
+  {
     switch (m_shape)
     {
       case Shape::SQUARE:
@@ -27,6 +33,23 @@ namespace spe
     };
   }
 
+  void Object::Push(const Force force)
+  {
+    m_acceleration = force.magnitude;
+    if (!m_colliding && m_velocity.magnitude < 25.f) {
+      m_velocity.magnitude += m_acceleration;
+      m_velocity.direction = force.direction;
+    }
+  }
+
+  bool Object::OutOfBounds() const
+  {
+    if (m_pos.x < 0 || m_pos.x > 600 - m_size.x || m_pos.y < 0 || m_pos.y > 600 - m_size.y) {
+      return true;
+    }
+    return false;
+  }
+
   void Object::CheckCollision() {
     switch (m_shape)
     {
@@ -37,5 +60,10 @@ namespace spe
       case Shape::TRIANGLE:
         break;
     };
+  }
+
+  void Object::UpdatePos()
+  {
+    m_pos.y += m_velocity.magnitude;
   }
 }

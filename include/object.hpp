@@ -15,6 +15,12 @@ enum class RigidBody
 
 namespace spe 
 {
+  struct Force
+  {
+    float magnitude{};
+    float direction{};
+  };
+
   class Object 
   {
   public:
@@ -24,23 +30,32 @@ namespace spe
            raylib::Vector2 pos, 
            raylib::Vector2 size);
 
+    void Tick();
     void Draw() const;
+    void Push(const Force force);
+    [[nodiscard]] bool OutOfBounds() const;
     [[nodiscard]] raylib::Vector2 GetPos() const {return m_pos;}
     [[nodiscard]] constexpr int GetId() const {return m_id;}
 
   private:
-    const uint32_t      m_id{};
-    const float         m_mass{};
+    uint32_t            m_id{};
+    float               m_mass{};
     float               m_acceleration{};
-    const Shape         m_shape{};
-    const RigidBody     m_body{};
+    bool                m_colliding{};
+    Shape               m_shape{};
+    RigidBody           m_body{};
     raylib::Vector2     m_pos{};
     raylib::Vector2     m_size{};
-    raylib::Vector2     m_direction{};
-    std::vector<float>  m_velocity{};
+    Force               m_velocity{};
 
     void CheckCollision();
+    void UpdatePos();
   };
 }
+
+// meters/s
+// gravity = 
+// 1 meter = 1 pixel
+// world origin 0,0 = top left
 
 #endif // OBJECT_HPP
