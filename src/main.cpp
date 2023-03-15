@@ -5,7 +5,6 @@ int main()
   // Initialization
   raylib::Vector2 window{800.f, 600.f};
   spe::World world{};
-  world.LoadObject(spe::Object{0, Shape::SQUARE, RigidBody::DYNAMIC, {80.f,80.f}, {20.f, 20.f}});
   float runningTime{};
 
   InitWindow(window.x, window.y, "Simple Physics Engine");
@@ -19,15 +18,26 @@ int main()
     float deltaTime{GetFrameTime()};
     runningTime += deltaTime;
 
-    // Draw
-    BeginDrawing();
-
     if (runningTime > 1.f/30.f) {
       world.EnforceGravity();
       world.TickObjects();
       world.Tick();
       runningTime = 0.f;
+      
+      if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
+        world.LoadObject(spe::Object{world.GetInstances(), Shape::SQUARE, RigidBody::DYNAMIC, GetMousePosition(), {20.f,20.f}});
+        ++(world.GetInstances());
+      }
     }
+    
+    if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)) {
+      world.LoadObject(spe::Object{world.GetInstances(), Shape::SQUARE, RigidBody::DYNAMIC, GetMousePosition(), {20.f,20.f}});
+      ++(world.GetInstances());
+    }
+
+
+    // Draw
+    BeginDrawing();
 
     world.DrawObjects();
     DrawText(TextFormat("# of objects: %i", world.Instances()), 620, 20, 20, WHITE);
