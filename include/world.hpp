@@ -23,10 +23,11 @@ namespace spe
     void EnforceGravity();
     const std::vector<Object>& GetObjects() {return m_objects;}
     const int Instances() {return m_objects.size();}
+    uint32_t& GetInstances() {return m_instances;}
     
   private:
     const Force         m_gravity{2.f, 180.f};
-    int                 m_total{};
+    uint32_t            m_instances{};
     std::array<int, 3>  m_count{};
     std::vector<Object> m_objects{};
     raylib::Vector2     m_world{600.f, 600.f};
