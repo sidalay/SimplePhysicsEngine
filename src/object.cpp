@@ -44,7 +44,7 @@ namespace spe
 
   bool Object::OutOfBounds() const
   {
-    if (m_pos.x < 0 || m_pos.x > 600 - m_size.x || m_pos.y < 0 || m_pos.y > 600 - m_size.y) {
+    if (m_pos.x < 0 || m_pos.x > 600 + m_size.x || m_pos.y < 0 || m_pos.y > 600) {
       return true;
     }
     return false;
