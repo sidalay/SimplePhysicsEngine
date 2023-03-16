@@ -41,7 +41,9 @@ namespace spe
   void World::EnforceGravity()
   {
     for (auto& object : m_objects) {
-      object.Push(m_gravity);
+      if (object.GetBody() == RigidBody::DYNAMIC) {
+        object.Push(m_gravity);
+      }
     }
   }
 }
