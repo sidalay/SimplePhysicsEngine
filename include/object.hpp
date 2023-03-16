@@ -34,6 +34,7 @@ namespace spe
     void Draw() const;
     void Push(const Force force);
     [[nodiscard]] bool OutOfBounds() const;
+    [[nodiscard]] RigidBody GetBody() const {return m_body;}
     [[nodiscard]] raylib::Vector2 GetPos() const {return m_pos;}
     [[nodiscard]] constexpr int GetId() const {return m_id;}
 
