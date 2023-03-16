@@ -10,7 +10,7 @@ namespace spe
     raylib::Vector2 pos,
     raylib::Vector2 size
   ) 
-  : m_id{id}, m_shape{shape}, m_pos{pos}, m_size{size} {
+  : m_id{id}, m_shape{shape}, m_body{body}, m_pos{pos}, m_size{size} {
     
   }
 
