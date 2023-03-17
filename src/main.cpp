@@ -5,6 +5,7 @@ int main()
   // Initialization
   raylib::Vector2 window{800.f, 600.f};
   spe::World world{};
+  world.LoadObject({world.GetInstances()++, Shape::SQUARE, RigidBody::STATIC, {50.f,560.f}, {500.f,20.f}});
   float runningTime{};
 
   InitWindow(window.x, window.y, "Simple Physics Engine");
@@ -18,21 +19,19 @@ int main()
     float deltaTime{GetFrameTime()};
     runningTime += deltaTime;
 
-    if (runningTime > 1.f/30.f) {
+    if (runningTime > 1.f/33.5f) {
       world.EnforceGravity();
       world.TickObjects();
       world.Tick();
       runningTime = 0.f;
       
       if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
-        world.LoadObject(spe::Object{world.GetInstances(), Shape::SQUARE, RigidBody::DYNAMIC, GetMousePosition(), {20.f,20.f}});
-        ++(world.GetInstances());
+        world.LoadObject({world.GetInstances()++, Shape::SQUARE, RigidBody::DYNAMIC, GetMousePosition(), {20.f,20.f}});
       }
     }
     
     if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)) {
-      world.LoadObject(spe::Object{world.GetInstances(), Shape::SQUARE, RigidBody::DYNAMIC, GetMousePosition(), {20.f,20.f}});
-      ++(world.GetInstances());
+      world.LoadObject({world.GetInstances()++, Shape::SQUARE, RigidBody::DYNAMIC, GetMousePosition(), {20.f,20.f}});
     }
 
 
@@ -40,6 +39,8 @@ int main()
     BeginDrawing();
 
     world.DrawObjects();
+    DrawRectangle(600, 0, 200, 800, Color{20, 21, 21, 255});
+    // DrawRectangleLines(600, 0, 200, 800, Color{20, 21, 21, 255});
     DrawText(TextFormat("# of objects: %i", world.Instances()), 620, 20, 20, WHITE);
 
     ClearBackground(BLACK);
