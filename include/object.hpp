@@ -47,7 +47,7 @@ namespace spe
     RigidBody           m_body{};
     raylib::Vector2     m_pos{};
     raylib::Vector2     m_size{};
-    Force               m_velocity{};
+    Force               m_velocity{1,0};
 
     void CheckCollision();
     void UpdatePos();
@@ -55,7 +55,7 @@ namespace spe
 }
 
 // meters/s
-// gravity = 
+// gravity = 2 m/s/s
 // 1 meter = 1 pixel
 // world origin 0,0 = top left
 
