@@ -60,3 +60,11 @@ namespace spe
 // world origin 0,0 = top left
 
 #endif // OBJECT_HPP
+
+/*
+TODO
+[ ] Possibly rename Force struct
+[ ] Apply Collision
+[ ] Figure out how to add Mass into the formula
+[ ] Revisit design
+*/ 
