@@ -25,6 +25,7 @@ namespace spe
     {
       case Shape::SQUARE:
         DrawRectangleLines(m_pos.x, m_pos.y, m_size.x, m_size.y, WHITE);
+        DrawRectangleLines(m_pos.x-1, m_pos.y-1, m_size.x+2, m_size.y+2, WHITE);
         break;
       case Shape::CIRCLE:
         break;
