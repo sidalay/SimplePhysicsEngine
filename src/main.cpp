@@ -5,7 +5,7 @@ int main()
   // Initialization
   raylib::Vector2 window{800.f, 600.f};
   spe::World world{};
-  world.LoadObject({world.GetInstances()++, Shape::SQUARE, RigidBody::STATIC, {50.f,560.f}, {500.f,20.f}});
+  // world.LoadObject({world.GetInstances()++, Shape::SQUARE, RigidBody::STATIC, {50.f,560.f}, {500.f,20.f}});
   float runningTime{};
 
   InitWindow(window.x, window.y, "Simple Physics Engine");
@@ -34,6 +34,9 @@ int main()
       world.LoadObject({world.GetInstances()++, Shape::SQUARE, RigidBody::DYNAMIC, GetMousePosition(), {20.f,20.f}});
     }
 
+    if (IsKeyDown(KEY_LEFT_ALT) && IsKeyPressed(KEY_ENTER)) {
+      ToggleFullscreen();
+    }
 
     // Draw
     BeginDrawing();
