@@ -1,6 +1,8 @@
 #ifndef OBJECT_HPP
 #define OBJECT_HPP
 
+#include <cmath>
+
 #include "raylib-cpp.hpp"
 
 enum class Shape 
@@ -67,4 +69,5 @@ TODO
 [ ] Apply Collision
 [ ] Figure out how to add Mass into the formula
 [ ] Revisit design
+[ ] Implement lerp functions
 */ 
