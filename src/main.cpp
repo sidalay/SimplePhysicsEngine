@@ -7,6 +7,8 @@ int main()
   spe::World world{};
   // world.LoadObject({world.GetInstances()++, Shape::SQUARE, RigidBody::STATIC, {50.f,560.f}, {500.f,20.f}});
   float runningTime{};
+  float t{};
+  float direction{0.01};
 
   InitWindow(window.x, window.y, "Simple Physics Engine");
   SetTraceLogLevel(LOG_NONE);
@@ -18,6 +20,11 @@ int main()
     // Update
     float deltaTime{GetFrameTime()};
     runningTime += deltaTime;
+
+    if (t > 1.f || t < 0.f) {
+      direction = -direction;
+    }
+    t += direction;
 
     if (runningTime > 1.f/33.5f) {
       world.EnforceGravity();
@@ -45,6 +52,7 @@ int main()
     DrawRectangle(600, 0, 200, 800, Color{20, 21, 21, 255});
     // DrawRectangleLines(600, 0, 200, 800, Color{20, 21, 21, 255});
     DrawText(TextFormat("# of objects: %i", world.Instances()), 620, 20, 20, WHITE);
+    DrawRectangle(std::lerp(100, 400, t), 300, 20, 20, BLUE);
 
     ClearBackground(BLACK);
     EndDrawing();
