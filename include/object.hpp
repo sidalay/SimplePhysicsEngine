@@ -17,15 +17,12 @@ enum class RigidBody
 
 namespace spe 
 {
+  using Scalar = float;
+
   struct Vector
   {
     float magnitude{};
     float direction{};
-  };
-
-  struct Scalar
-  {
-    float magnitude{};
   };
 
   class Object 
@@ -47,15 +44,16 @@ namespace spe
 
   private:
     uint32_t            m_id{};
-    float               m_mass{};
     bool                m_colliding{};
     Shape               m_shape{};
     RigidBody           m_body{};
     raylib::Vector2     m_pos{};
     raylib::Vector2     m_size{};
+    spe::Scalar         m_mass{};
     spe::Scalar         m_speed{};
+    spe::Vector         m_force{};
     spe::Vector         m_acceleration{};
-    spe::Vector         m_velocity{1,0};
+    spe::Vector         m_velocity{};
 
     void CheckCollision();
     void UpdatePos();
@@ -71,7 +69,7 @@ namespace spe
 
 /*
 TODO
-[ ] Possibly rename Force struct
+[x] Possibly rename Force -> Vector
 [ ] Apply Collision
 [ ] Figure out how to add Mass into the formula
 [ ] Revisit design
