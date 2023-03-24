@@ -17,10 +17,15 @@ enum class RigidBody
 
 namespace spe 
 {
-  struct Force
+  struct Vector
   {
     float magnitude{};
     float direction{};
+  };
+
+  struct Scalar
+  {
+    float magnitude{};
   };
 
   class Object 
@@ -34,7 +39,7 @@ namespace spe
 
     void Tick();
     void Draw() const;
-    void Push(const Force force);
+    void Push(const Vector force);
     [[nodiscard]] bool OutOfBounds() const;
     [[nodiscard]] RigidBody GetBody() const {return m_body;}
     [[nodiscard]] raylib::Vector2 GetPos() const {return m_pos;}
@@ -43,13 +48,14 @@ namespace spe
   private:
     uint32_t            m_id{};
     float               m_mass{};
-    float               m_acceleration{};
     bool                m_colliding{};
     Shape               m_shape{};
     RigidBody           m_body{};
     raylib::Vector2     m_pos{};
     raylib::Vector2     m_size{};
-    Force               m_velocity{1,0};
+    spe::Scalar         m_speed{};
+    spe::Vector         m_acceleration{};
+    spe::Vector         m_velocity{1,0};
 
     void CheckCollision();
     void UpdatePos();
