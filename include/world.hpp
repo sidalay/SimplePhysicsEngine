@@ -26,11 +26,11 @@ namespace spe
     uint32_t& GetInstances() {return m_instances;}
     
   private:
-    const spe::Vector   m_gravity{2.f, 180.f};
     uint32_t            m_instances{};
     std::array<int, 3>  m_count{};
     std::vector<Object> m_objects{};
     raylib::Vector2     m_world{600.f, 600.f};
+    const spe::Vector   m_gravity{2.f, 180.f};
   };
 }
 
