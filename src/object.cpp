@@ -34,11 +34,11 @@ namespace spe
     };
   }
 
-  void Object::Push(const Force force)
+  void Object::Push(const Vector force)
   {
-    m_acceleration = force.magnitude;
+    m_acceleration.magnitude = force.magnitude;
     if (!m_colliding && m_velocity.magnitude < 25.f) {
-      m_velocity.magnitude += m_acceleration;
+      m_velocity.magnitude += m_acceleration.magnitude;
       m_velocity.direction = force.direction;
     }
   }
