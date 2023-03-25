@@ -1,10 +1,6 @@
 #include "world.hpp"
 
-float f(float t) {
-  float v1 = t * t;
-  float v2 = 1.f - (1.f - t) * (1.f - t);
-  return std::lerp(v1, v2, t);
-}
+#include "lerp.hpp"
 
 int main()
 {
@@ -65,14 +61,14 @@ int main()
     // DrawRectangleLines(600, 0, 200, 800, Color{20, 21, 21, 255});
     DrawText(TextFormat("# of objects: %i", world.Instances()), 620, 20, 20, WHITE);
 
-    DrawRectangle(std::lerp(50, 500, x * x), 50, 20, 20, BLUE);
-    DrawRectangle(std::lerp(50, 500, f(t)), 200, 20, 20, BLUE);
-    DrawRectangle(std::lerp(50, 500, t * t), 350, 20, 20, BLUE);
+    DrawRectangle(std::lerp(50, 500, spe::QuadraticEaseOut(t)), 50, 20, 20, BLUE);
+    DrawRectangle(std::lerp(50, 500, spe::Parabola(t, 4)), 200, 20, 20, BLUE);
+    DrawRectangle(std::lerp(50, 500, spe::Triangle(t)), 350, 20, 20, BLUE);
 
     DrawRectangle(50, 500, 500, 20, { 
-      static_cast<unsigned char>(std::lerp(0.f, 255.f, f(t))), 
-      static_cast<unsigned char>(std::lerp(121.f, 20.f, f(t))), 
-      static_cast<unsigned char>(std::lerp(241.f, 120.f, f(t))), 
+      static_cast<unsigned char>(std::lerp(0.f, 255.f, spe::Smoothstep(t))), 
+      static_cast<unsigned char>(std::lerp(121.f, 20.f, spe::Smoothstep(t))), 
+      static_cast<unsigned char>(std::lerp(241.f, 120.f, spe::Smoothstep(t))), 
       255 });
 
     DrawRectangle(50, 450, 100, 20, { 
