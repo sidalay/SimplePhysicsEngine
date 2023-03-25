@@ -13,17 +13,22 @@ namespace spe
   {
     struct Info
     {
-
+      uint32_t              instances{};
+      std::vector<Object>   objects{};
     };
 
-    struct Objects
+    struct Properties
     {
-
+      raylib::Vector2       dimensions{1920.f, 1080.f};
+      spe::Vector           gravity{2.f, 180.f};
     };
 
     void Run();
     void Initialize();
     void Tick();
+    void UnloadObject();
+    void DrawObjects();
+    void TickObjects();
   }
 }
 
