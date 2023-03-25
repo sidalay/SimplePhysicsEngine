@@ -28,11 +28,8 @@ int main()
     if (t > 1.f || t < 0.f) {
       direction = -direction;
     }
-    if (x > 1.2f || x < 0.f) {
-      directionX = -directionX;
-    }
     t += direction;
-    x += directionX;
+
 
     if (runningTime > 1.f/33.5f) {
       world.EnforceGravity();
@@ -61,9 +58,9 @@ int main()
     // DrawRectangleLines(600, 0, 200, 800, Color{20, 21, 21, 255});
     DrawText(TextFormat("# of objects: %i", world.Instances()), 620, 20, 20, WHITE);
 
-    DrawRectangle(std::lerp(50, 500, spe::QuadraticEaseOut(t)), 50, 20, 20, BLUE);
-    DrawRectangle(std::lerp(50, 500, spe::Parabola(t, 4)), 200, 20, 20, BLUE);
-    DrawRectangle(std::lerp(50, 500, spe::Triangle(t)), 350, 20, 20, BLUE);
+    DrawRectangle(std::lerp(50, 500, spe::EaseIn(t)), 50, 20, 20, BLUE);
+    DrawRectangle(std::lerp(50, 500, spe::QuadraticEaseOut(t)), 200, 20, 20, BLUE);
+    DrawRectangle(std::lerp(50, 500, spe::Smoothstep(t)), 350, 20, 20, BLUE);
 
     DrawRectangle(50, 500, 500, 20, { 
       static_cast<unsigned char>(std::lerp(0.f, 255.f, spe::Smoothstep(t))), 
