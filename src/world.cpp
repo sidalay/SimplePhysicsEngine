@@ -39,9 +39,9 @@ namespace spe
       UnloadObject(info);
 
       if (spe::blend > 1.f || spe::blend < 0.f) {
-        info.direction = -info.direction;
+        spe::direction = -spe::direction;
       }
-      spe::blend += info.direction;
+      spe::blend += spe::direction;
 
       if (info.deltaTime > 1.f/33.5f) {
         Gravity(info, global);
