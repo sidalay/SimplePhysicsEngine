@@ -10,8 +10,13 @@ namespace spe
     raylib::Vector2 pos,
     raylib::Vector2 size
   ) 
-  : m_id{id}, m_shape{shape}, m_body{body}, m_pos{pos}, m_size{size} {
-    
+  : m_id{id}, 
+    m_shape{shape}, 
+    m_body{body}, 
+    m_pos{pos}, 
+    m_size{size} 
+  {
+
   }
 
   void Object::Tick()
@@ -49,18 +54,6 @@ namespace spe
       return true;
     }
     return false;
-  }
-
-  void Object::CheckCollision() {
-    switch (m_shape)
-    {
-      case Shape::SQUARE:
-        break;
-      case Shape::CIRCLE:
-        break;
-      case Shape::TRIANGLE:
-        break;
-    };
   }
 
   void Object::UpdatePos()

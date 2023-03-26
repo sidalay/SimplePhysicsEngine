@@ -55,7 +55,6 @@ namespace spe
     spe::Vector         m_acceleration{};
     spe::Vector         m_velocity{};
 
-    void CheckCollision();
     void UpdatePos();
   };
 }
