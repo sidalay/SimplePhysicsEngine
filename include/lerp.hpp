@@ -5,6 +5,25 @@
 
 namespace spe 
 {
+  float blend{};
+  float direction{0.01};
+
+  float Lerp(float a, float b, float t)
+  {
+    return a + (b - a) * t;
+  }
+
+  float InvLerp(float a, float b, float v)
+  {
+    return (v - a) / (b - a);
+  }
+
+  float Remap(float iMin, float iMax, float oMin, float oMax, float v)
+  {
+    float t = spe::InvLerp(iMin, iMax, v);
+    return spe::Lerp(oMin, oMax, t);
+  }
+
   float EaseIn(float t) 
   {
     return t * t;
