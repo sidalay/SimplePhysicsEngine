@@ -15,9 +15,7 @@ namespace spe
 
     struct Info
     {
-      float deltaTime{};
-      float t{};
-      float direction{0.01};
+      float                 deltaTime{};
       uint32_t              instances{};
       std::vector<Object>   objects{};
     };
