@@ -30,10 +30,11 @@ namespace spe
     void Initialize(const world::Properties&, const std::string&&);
     void Tick(world::Info&, const world::Properties&);
     void LoadObject(world::Info&, Object&&);
-    void UnloadObject(world::Info&);
+    void UnloadObject(world::Info&, const world::Properties&);
     void DrawObjects(const world::Info&);
     void TickObjects(world::Info&);
     void Gravity(world::Info&, const world::Properties&);
+    bool CheckBounds(const Object&, const world::Properties&);
   }
 }
 

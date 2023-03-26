@@ -36,17 +36,18 @@ namespace spe
     {
       // Update
       info.deltaTime += GetFrameTime();
-      UnloadObject(info);
+      info.instances = info.objects.size();
+      UnloadObject(info, global);
 
-      if (spe::blend > 1.f || spe::blend < 0.f) {
-        spe::direction = -spe::direction;
-      }
-      spe::blend += spe::direction;
-
-      if (info.deltaTime > 1.f/33.5f) {
+      if (info.deltaTime > 1.f/144.f) {
         Gravity(info, global);
         TickObjects(info);
         info.deltaTime = 0.f;
+
+        if (spe::blend > 1.f || spe::blend < 0.f) {
+          spe::direction = -spe::direction;
+        }
+        spe::blend += spe::direction;
         
         if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
           LoadObject(info, {info.instances++, Shape::SQUARE, RigidBody::DYNAMIC, GetMousePosition(), {20.f,20.f}});
@@ -65,17 +66,20 @@ namespace spe
       BeginDrawing();
 
       DrawObjects(info);
+      DrawText(TextFormat("# of objects: %i", info.instances), 20, 20, 20, WHITE);
 
-      DrawRectangle(spe::Lerp(50, 500, spe::EaseIn(spe::blend)), 50, 20, 20, BLUE);
-      DrawRectangle(spe::Lerp(50, 500, spe::QuadraticEaseOut(spe::blend)), 200, 20, 20, BLUE);
-      DrawRectangle(spe::Lerp(50, 500, spe::Smoothstep(spe::blend)), 350, 20, 20, BLUE);
+      // ------------- Lerp
+      DrawRectangle(spe::Lerp(global.dimensions.x * .05f, global.dimensions.x * .9f, spe::EaseIn(spe::blend)), 100, 20, 20, BLUE);
+      DrawRectangle(spe::Lerp(global.dimensions.x * .05f, global.dimensions.x * .9f, spe::EaseOut(spe::blend)), 250, 20, 20, BLUE);
+      DrawRectangle(spe::Lerp(global.dimensions.x * .05f, global.dimensions.x * .9f, spe::Smoothstep(spe::blend)), 400, 20, 20, BLUE);
 
-      DrawRectangle(50, 500, 500, 20, { 
+      DrawRectangle(global.dimensions.x * .05f, 550, global.dimensions.x * .9f, 20, { 
         static_cast<unsigned char>(spe::Lerp(0.f, 255.f, spe::Smoothstep(spe::blend))), 
         static_cast<unsigned char>(spe::Lerp(121.f, 20.f, spe::Smoothstep(spe::blend))), 
         static_cast<unsigned char>(spe::Lerp(241.f, 120.f, spe::Smoothstep(spe::blend))), 
         255 
       });
+      // ------------- Lerp
 
       ClearBackground(BLACK);
       EndDrawing();
@@ -86,10 +90,10 @@ namespace spe
       info.objects.emplace_back(object);
     }
 
-    void UnloadObject(world::Info& info)
+    void UnloadObject(world::Info& info, const world::Properties& global)
     {
-      auto it {std::remove_if(info.objects.begin(), info.objects.end(), [](const Object& object) {
-        return object.OutOfBounds();
+      auto it {std::remove_if(info.objects.begin(), info.objects.end(), [&](const Object& object) {
+        return CheckBounds(object, global);
       })};
       info.objects.erase(it, info.objects.end());
     }
@@ -106,6 +110,15 @@ namespace spe
       for (auto& object : info.objects) {
         object.Tick();
       }
+    }
+
+    bool CheckBounds(const Object& object, const world::Properties& global)
+    {
+      raylib::Vector2 pos{object.GetPos()};
+      if (pos.x < 0 || pos.x > global.dimensions.x || pos.y < 0 || pos.y > global.dimensions.y) {
+        return true;
+      }
+      return false;
     }
 
     void Gravity(world::Info& info, const world::Properties& global)
