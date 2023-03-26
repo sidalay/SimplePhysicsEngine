@@ -3,35 +3,40 @@
 
 #include <vector>
 #include <array>
-#include <algorithm>
+#include <string>
 
 #include "object.hpp"
 
 namespace spe 
 {
-  class World 
+  namespace world
   {
+    using namespace spe;
 
-  public:
-    World();
+    struct Info
+    {
+      float deltaTime{};
+      float t{};
+      float direction{0.01};
+      uint32_t              instances{};
+      std::vector<Object>   objects{};
+    };
 
-    void Tick();
-    void LoadObject(Object object);
-    void UnloadObject();
-    void DrawObjects() const;
-    void TickObjects();
-    void EnforceGravity();
-    const std::vector<Object>& GetObjects() {return m_objects;}
-    const int Instances() {return m_objects.size();}
-    uint32_t& GetInstances() {return m_instances;}
-    
-  private:
-    uint32_t            m_instances{};
-    std::array<int, 3>  m_count{};
-    std::vector<Object> m_objects{};
-    raylib::Vector2     m_world{600.f, 600.f};
-    const spe::Vector   m_gravity{2.f, 180.f};
-  };
+    struct Properties
+    {
+      raylib::Vector2       dimensions{1280.f, 720.f};
+      spe::Vector           gravity{2.f, 180.f};
+    };
+
+    void Run();
+    void Initialize(const world::Properties&, const std::string&&);
+    void Tick(world::Info&, const world::Properties&);
+    void LoadObject(world::Info&, Object&&);
+    void UnloadObject(world::Info&);
+    void DrawObjects(const world::Info&);
+    void TickObjects(world::Info&);
+    void Gravity(world::Info&, const world::Properties&);
+  }
 }
 
 #endif // WORLD_HPP
