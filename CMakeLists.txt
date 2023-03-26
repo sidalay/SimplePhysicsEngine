@@ -7,7 +7,7 @@ if (NOT raylib_FOUND)
         FetchContent_Declare(
         raylib
         GIT_REPOSITORY https://github.com/raysan5/raylib.git
-        GIT_TAG 4.2.0
+        GIT_TAG 4.5.0
     )
     FetchContent_GetProperties(raylib)
     if (NOT raylib_POPULATED)
@@ -25,14 +25,15 @@ if (NOT raylib_cpp_FOUND)
         FetchContent_Declare(
         raylib_cpp
         GIT_REPOSITORY https://github.com/RobLoach/raylib-cpp.git
-        GIT_TAG v4.2.8
+        GIT_TAG v4.5.0
     )
     FetchContent_MakeAvailable(raylib_cpp)
 endif()
 
-file(GLOB_RECURSE SOURCES ${PROJECT_SOURCE_DIR}/src/*.cpp)
 add_executable(${PROJECT_NAME}
-    ${SOURCES}
+    src/main.cpp
+    src/object.cpp
+    src/world.cpp
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE raylib raylib_cpp)
