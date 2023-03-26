@@ -37,7 +37,6 @@ namespace spe
     void Tick();
     void Draw() const;
     void Push(const spe::Vector force);
-    [[nodiscard]] bool OutOfBounds() const;
     [[nodiscard]] RigidBody GetBody() const {return m_body;}
     [[nodiscard]] raylib::Vector2 GetPos() const {return m_pos;}
     [[nodiscard]] constexpr int GetId() const {return m_id;}
