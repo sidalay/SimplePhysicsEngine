@@ -16,11 +16,11 @@ namespace spe
       world::Properties properties{};
       world::Initialize(properties, "Simple Physics Engine");
 
-      // if (IsWindowReady())  {
+      if (IsWindowReady())  {
         while (!WindowShouldClose()) {
           spe::world::Tick(info, properties);
         }
-      // }
+      }
 
       CloseWindow();
     }
@@ -38,10 +38,10 @@ namespace spe
       info.deltaTime += GetFrameTime();
       UnloadObject(info);
 
-      if (info.t > 1.f || info.t < 0.f) {
+      if (spe::blend > 1.f || spe::blend < 0.f) {
         info.direction = -info.direction;
       }
-      info.t += info.direction;
+      spe::blend += info.direction;
 
       if (info.deltaTime > 1.f/33.5f) {
         Gravity(info, global);
@@ -66,15 +66,16 @@ namespace spe
 
       DrawObjects(info);
 
-      DrawRectangle(std::lerp(50, 500, spe::EaseIn(info.t)), 50, 20, 20, BLUE);
-      DrawRectangle(std::lerp(50, 500, spe::QuadraticEaseOut(info.t)), 200, 20, 20, BLUE);
-      DrawRectangle(std::lerp(50, 500, spe::Smoothstep(info.t)), 350, 20, 20, BLUE);
+      DrawRectangle(spe::Lerp(50, 500, spe::EaseIn(spe::blend)), 50, 20, 20, BLUE);
+      DrawRectangle(spe::Lerp(50, 500, spe::QuadraticEaseOut(spe::blend)), 200, 20, 20, BLUE);
+      DrawRectangle(spe::Lerp(50, 500, spe::Smoothstep(spe::blend)), 350, 20, 20, BLUE);
 
       DrawRectangle(50, 500, 500, 20, { 
-      static_cast<unsigned char>(std::lerp(0.f, 255.f, spe::Smoothstep(info.t))), 
-      static_cast<unsigned char>(std::lerp(121.f, 20.f, spe::Smoothstep(info.t))), 
-      static_cast<unsigned char>(std::lerp(241.f, 120.f, spe::Smoothstep(info.t))), 
-      255 });
+        static_cast<unsigned char>(spe::Lerp(0.f, 255.f, spe::Smoothstep(spe::blend))), 
+        static_cast<unsigned char>(spe::Lerp(121.f, 20.f, spe::Smoothstep(spe::blend))), 
+        static_cast<unsigned char>(spe::Lerp(241.f, 120.f, spe::Smoothstep(spe::blend))), 
+        255 
+      });
 
       ClearBackground(BLACK);
       EndDrawing();
