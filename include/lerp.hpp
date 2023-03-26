@@ -10,7 +10,7 @@ namespace spe
 
   float Lerp(float a, float b, float t)
   {
-    return a + (b - a) * t;
+    return a * (1.f - t) + b * t;
   }
 
   float InvLerp(float a, float b, float v)
@@ -31,12 +31,12 @@ namespace spe
 
   float EaseOut(float t)
   {
-    return std::sqrt(t);
+    return 1.f - (1.f - t) * (1.f - t);
   }
 
-  float QuadraticEaseOut(float t)
+  float Smoothstep(float t)
   {
-    return 1.f - (1.f - t) * (1.f - t);
+    return std::lerp(spe::EaseIn(t), spe::EaseOut(t), t);
   }
 
   float Parabola(float t, float k) 
@@ -71,13 +71,6 @@ namespace spe
       t -= 2.625f / dl;
       return nl * t * t + 0.984375f;
     }
-  }
-
-  float Smoothstep(float t)
-  {
-    float v1{t * t};
-    float v2{1.f - (1.f - t) * (1.f - t)};
-    return std::lerp(v1, v2, t);
   }
 }
 
