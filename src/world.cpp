@@ -3,7 +3,6 @@
 #include "world.hpp"
 #include "lerp.hpp"
 
-
 namespace spe 
 {
   namespace world
@@ -85,7 +84,7 @@ namespace spe
       EndDrawing();
     }
 
-    void LoadObject(world::Info& info, Object&& object)
+    void LoadObject(world::Info& info, spe::Object&& object)
     {
       info.objects.emplace_back(object);
     }
@@ -112,7 +111,7 @@ namespace spe
       }
     }
 
-    bool CheckBounds(const Object& object, const world::Properties& global)
+    bool CheckBounds(const spe::Object& object, const world::Properties& global)
     {
       raylib::Vector2 pos{object.GetPos()};
       if (pos.x < 0 || pos.x > global.dimensions.x || pos.y < 0 || pos.y > global.dimensions.y) {

@@ -11,8 +11,6 @@ namespace spe
 {
   namespace world
   {
-    using namespace spe;
-
     struct Info
     {
       float                 deltaTime{};
@@ -29,12 +27,12 @@ namespace spe
     void Run();
     void Initialize(const world::Properties&, const std::string&&);
     void Tick(world::Info&, const world::Properties&);
-    void LoadObject(world::Info&, Object&&);
+    void LoadObject(world::Info&, spe::Object&&);
     void UnloadObject(world::Info&, const world::Properties&);
     void DrawObjects(const world::Info&);
     void TickObjects(world::Info&);
     void Gravity(world::Info&, const world::Properties&);
-    bool CheckBounds(const Object&, const world::Properties&);
+    bool CheckBounds(const spe::Object&, const world::Properties&);
   }
 }
 
