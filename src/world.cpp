@@ -36,7 +36,6 @@ namespace spe
     {
       // Update
       info.deltaTime += GetFrameTime();
-      info.instances = info.objects.size();
       UnloadObject(info, global);
 
       if (info.deltaTime > 1.f/144.f) {
@@ -66,7 +65,8 @@ namespace spe
       BeginDrawing();
 
       DrawObjects(info);
-      DrawText(TextFormat("# of objects: %i", info.instances), 20, 20, 20, WHITE);
+      DrawText(TextFormat("# of objects: %i", info.objects.size()), 20, 20, 20, WHITE);
+      DrawText(TextFormat("# of instances: %i", info.instances), 20, 40, 20, WHITE);
 
       // ------------- Lerp
       DrawRectangle(spe::Lerp(global.dimensions.x * .05f, global.dimensions.x * .9f, spe::EaseIn(spe::blend)), 100, 20, 20, BLUE);
