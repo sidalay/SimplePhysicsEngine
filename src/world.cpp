@@ -1,7 +1,6 @@
 #include <algorithm>
 
 #include "world.hpp"
-#include "lerp.hpp"
 
 namespace spe 
 {
