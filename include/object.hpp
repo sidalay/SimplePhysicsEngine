@@ -1,9 +1,8 @@
 #ifndef OBJECT_HPP
 #define OBJECT_HPP
 
-#include <cmath>
-
 #include "raylib-cpp.hpp"
+#include "lerp.hpp"
 
 enum class Shape 
 {
