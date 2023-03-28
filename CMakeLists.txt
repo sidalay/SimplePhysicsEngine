@@ -34,6 +34,7 @@ add_executable(${PROJECT_NAME}
     src/main.cpp
     src/object.cpp
     src/world.cpp
+    src/lerp.cpp
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE raylib raylib_cpp)
