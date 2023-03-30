@@ -32,6 +32,8 @@ namespace spe
     void DrawObjects(const world::Info&);
     void TickObjects(world::Info&);
     void Gravity(world::Info&, const world::Properties&);
+    void CheckCollisions(world::Info&);
+    void ImpulseResolution(const spe::Object&, const spe::Object&);
     bool CheckBounds(const spe::Object&, const world::Properties&);
   }
 }
