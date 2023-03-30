@@ -12,9 +12,10 @@ namespace spe
   ) 
   : m_id{id}, 
     m_shape{shape}, 
-    m_body{body}, 
+    m_body{body},
     m_pos{pos}, 
-    m_size{size} 
+    m_size{size},
+    m_rect{pos.x, pos.y, size.x, size.y} 
   {
 
   }
@@ -39,7 +40,7 @@ namespace spe
     };
   }
 
-  void Object::Push(const Vector force)
+  void Object::Push(const spe::Vector force)
   {
     m_acceleration.magnitude = force.magnitude;
     if (!m_colliding && m_velocity.magnitude < 25.f) {

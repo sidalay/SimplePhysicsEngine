@@ -39,6 +39,7 @@ namespace spe
     [[nodiscard]] RigidBody GetBody() const {return m_body;}
     [[nodiscard]] raylib::Vector2 GetPos() const {return m_pos;}
     [[nodiscard]] constexpr int GetId() const {return m_id;}
+    [[nodiscard]] raylib::Rectangle GetRect() const {return m_rect;}
 
   private:
     uint32_t            m_id{};
@@ -47,6 +48,7 @@ namespace spe
     RigidBody           m_body{};
     raylib::Vector2     m_pos{};
     raylib::Vector2     m_size{};
+    raylib::Rectangle   m_rect{};
     spe::Scalar         m_mass{};
     spe::Scalar         m_speed{};
     spe::Vector         m_force{};
