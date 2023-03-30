@@ -127,5 +127,19 @@ namespace spe
         }
       }
     }
+
+    void CheckCollisions(world::Info& info)
+    {
+      for (int i{}; i < info.objects.size(); ++i) {
+        if (CheckCollisionRecs(info.objects[i].GetRect(), info.objects[i+1].GetRect())) {
+          ImpulseResolution(info.objects[i], info.objects[i+1]);
+        }
+      }
+    }
+
+    void ImpulseResolution(const spe::Object& objone, const spe::Object& objtwo)
+    {
+
+    }
   }
 }
