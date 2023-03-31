@@ -11,6 +11,14 @@ namespace spe
 {
   namespace world
   {
+    struct Section
+    {
+      int                   region{};
+      raylib::Vector2       width{};
+      raylib::Vector2       height{};
+      raylib::Rectangle     rect{};
+    };
+
     struct Info
     {
       float                 deltaTime{};
@@ -22,19 +30,20 @@ namespace spe
     {
       raylib::Vector2       dimensions{1280.f, 720.f};
       spe::Vector           gravity{2.f, 180.f};
+      std::vector<Section>  grid{};
     };
 
     void Run();
-    void Initialize(const world::Properties&, const std::string&&);
-    void Tick(world::Info&, const world::Properties&);
-    void LoadObject(world::Info&, spe::Object&&);
-    void UnloadObject(world::Info&, const world::Properties&);
-    void DrawObjects(const world::Info&);
-    void TickObjects(world::Info&);
-    void Gravity(world::Info&, const world::Properties&);
-    void CheckCollisions(world::Info&);
+    void Initialize(Properties&, const std::string&&);
+    void Tick(Info&, const Properties&);
+    void LoadObject(Info&, spe::Object&&);
+    void UnloadObject(Info&, const Properties&);
+    void DrawObjects(const Info&);
+    void TickObjects(Info&);
+    void Gravity(Info&, const Properties&);
+    void CheckCollisions(Info&);
     void ImpulseResolution(const spe::Object&, const spe::Object&);
-    bool CheckBounds(const spe::Object&, const world::Properties&);
+    bool CheckBounds(const spe::Object&, const Properties&);
   }
 }
 
