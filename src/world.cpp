@@ -23,10 +23,11 @@ namespace spe
       CloseWindow();
     }
 
-    void Initialize(const world::Properties& global, const std::string&& title)
+    void Initialize(world::Properties& global, const std::string&& title)
     {
       SetTraceLogLevel(LOG_WARNING);
       InitWindow(global.dimensions.x, global.dimensions.y, title.c_str());
+      InitializeGrid(global);
       SetTargetFPS(144);
     }
 
@@ -62,21 +63,26 @@ namespace spe
       // Draw
       BeginDrawing();
 
+      for (auto& cell : global.grid) {
+        DrawRectangleLines(cell.area.x, cell.area.y, cell.area.width, cell.area.height, { 255, 255, 255, 100 });
+        DrawText(TextFormat("%i", cell.id), cell.area.x+3, cell.area.y+3, 14, { 255, 255, 255, 100 });
+      }
+
       DrawObjects(info);
-      DrawText(TextFormat("# of objects: %i", info.objects.size()), 20, 20, 20, WHITE);
-      DrawText(TextFormat("# of instances: %i", info.instances), 20, 40, 20, WHITE);
+      // DrawText(TextFormat("# of objects: %i", info.objects.size()), 20, 20, 20, WHITE);
+      // DrawText(TextFormat("# of instances: %i", info.instances), 20, 40, 20, WHITE);
 
       // ------------- Lerp
-      DrawRectangle(spe::Lerp(global.dimensions.x * .05f, global.dimensions.x * .9f, spe::EaseIn(spe::blend)), 100, 20, 20, BLUE);
-      DrawRectangle(spe::Lerp(global.dimensions.x * .05f, global.dimensions.x * .9f, spe::EaseOut(spe::blend)), 250, 20, 20, BLUE);
-      DrawRectangle(spe::Lerp(global.dimensions.x * .05f, global.dimensions.x * .9f, spe::Smoothstep(spe::blend)), 400, 20, 20, BLUE);
+      // DrawRectangle(spe::Lerp(global.dimensions.x * .05f, global.dimensions.x * .9f, spe::EaseIn(spe::blend)), 100, 20, 20, BLUE);
+      // DrawRectangle(spe::Lerp(global.dimensions.x * .05f, global.dimensions.x * .9f, spe::EaseOut(spe::blend)), 250, 20, 20, BLUE);
+      // DrawRectangle(spe::Lerp(global.dimensions.x * .05f, global.dimensions.x * .9f, spe::Smoothstep(spe::blend)), 400, 20, 20, BLUE);
 
-      DrawRectangle(global.dimensions.x * .05f, 550, global.dimensions.x * .9f, 20, { 
-        static_cast<unsigned char>(spe::Lerp(0.f, 255.f, spe::Smoothstep(spe::blend))), 
-        static_cast<unsigned char>(spe::Lerp(121.f, 20.f, spe::Smoothstep(spe::blend))), 
-        static_cast<unsigned char>(spe::Lerp(241.f, 120.f, spe::Smoothstep(spe::blend))), 
-        255 
-      });
+      // DrawRectangle(global.dimensions.x * .05f, 550, global.dimensions.x * .9f, 20, { 
+      //   static_cast<unsigned char>(spe::Lerp(0.f, 255.f, spe::Smoothstep(spe::blend))), 
+      //   static_cast<unsigned char>(spe::Lerp(121.f, 20.f, spe::Smoothstep(spe::blend))), 
+      //   static_cast<unsigned char>(spe::Lerp(241.f, 120.f, spe::Smoothstep(spe::blend))), 
+      //   255 
+      // });
       // ------------- Lerp
 
       ClearBackground(BLACK);
@@ -133,6 +139,16 @@ namespace spe
       for (int i{}; i < info.objects.size(); ++i) {
         if (CheckCollisionRecs(info.objects[i].GetRect(), info.objects[i+1].GetRect())) {
           ImpulseResolution(info.objects[i], info.objects[i+1]);
+        }
+      }
+    }
+
+    void InitializeGrid(world::Properties& global)
+    {
+      int id{};
+      for (float y{}; y < global.dimensions.y; y += global.dimensions.y/global.gRowCol.y) {
+        for (float x{}; x < global.dimensions.x; x += global.dimensions.x/global.gRowCol.x) {
+          global.grid.emplace_back(id++, raylib::Rectangle{x, y, global.dimensions.x/global.gRowCol.x, global.dimensions.y/global.gRowCol.y});
         }
       }
     }
