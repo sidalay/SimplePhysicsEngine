@@ -11,12 +11,10 @@ namespace spe
 {
   namespace world
   {
-    struct Section
+    struct Cell
     {
-      int                   region{};
-      raylib::Vector2       width{};
-      raylib::Vector2       height{};
-      raylib::Rectangle     rect{};
+      int                   id{};
+      raylib::Rectangle     area{};
     };
 
     struct Info
@@ -28,9 +26,10 @@ namespace spe
 
     struct Properties
     {
-      raylib::Vector2       dimensions{1280.f, 720.f};
+      raylib::Vector2       dimensions{1920.f, 1080.f};
+      raylib::Vector2       gRowCol{20.f, 10.f};
+      std::vector<Cell>     grid{};
       spe::Vector           gravity{2.f, 180.f};
-      std::vector<Section>  grid{};
     };
 
     void Run();
@@ -43,6 +42,7 @@ namespace spe
     void Gravity(Info&, const Properties&);
     void CheckCollisions(Info&);
     void ImpulseResolution(const spe::Object&, const spe::Object&);
+    void InitializeGrid(Properties&);
     bool CheckBounds(const spe::Object&, const Properties&);
   }
 }
