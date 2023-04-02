@@ -1,8 +1,6 @@
 #ifndef WORLD_HPP
 #define WORLD_HPP
 
-#include <vector>
-#include <array>
 #include <string>
 
 #include "object.hpp"
@@ -13,10 +11,10 @@ namespace spe
   {
     struct Cell
     {
-      int                   id{};
+      uint16_t              id{};
       raylib::Rectangle     area{};
     };
-
+    
     struct Info
     {
       float                 deltaTime{};
@@ -34,9 +32,9 @@ namespace spe
 
     void Run();
     void Initialize(Properties&, const std::string&&);
-    void Tick(Info&, const Properties&);
+    void Tick(Info&, Properties&);
     void LoadObject(Info&, spe::Object&&);
-    void UnloadObject(Info&, const Properties&);
+    void UnloadObject(Info&, Properties&);
     void DrawObjects(const Info&);
     void TickObjects(Info&);
     void Gravity(Info&, const Properties&);
