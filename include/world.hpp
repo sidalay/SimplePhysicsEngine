@@ -14,7 +14,7 @@ namespace spe
     {
       uint16_t              id{};
       raylib::Rectangle     area{};
-      std::vector<std::unique_ptr<Object>>  objects;
+      std::vector<std::unique_ptr<Object>> objects;
     };
     
     struct Info
@@ -26,7 +26,7 @@ namespace spe
     struct Properties
     {
       float                 deltaTime{};
-      raylib::Vector2       dimensions{1920.f, 1080.f};
+      raylib::Vector2       dimensions{1280.f, 720.f};
       raylib::Vector2       gRowCol{20.f, 10.f};
       std::vector<Cell>     grid{};
       spe::Vector           gravity{2.f, 180.f};
@@ -43,8 +43,8 @@ namespace spe
     void CheckCollisions(Info&);
     void ImpulseResolution(const spe::Object&, const spe::Object&);
     void InitializeGrid(Properties&);
-    void UpdateCells(const Info&, Properties&);
-    void LoadCell(Cell&, spe::Object&);
+    void UpdateCells(Properties&);
+    bool LoadCell(Cell&, spe::Object&);
     bool CheckCell(Cell&, spe::Object&);
     bool CheckBounds(const spe::Object&, const Properties&);
   }
