@@ -14,18 +14,13 @@ namespace spe
     {
       uint16_t              id{};
       raylib::Rectangle     area{};
-      std::vector<std::unique_ptr<Object>> objects;
+      std::vector<Object>   objects;
     };
-    
-    struct Info
-    {
-      uint32_t              instances{};
-      std::vector<Object>   objects{};
-    };
-
+  
     struct Properties
     {
       float                 deltaTime{};
+      uint32_t              instances{};
       raylib::Vector2       dimensions{1280.f, 720.f};
       raylib::Vector2       gRowCol{20.f, 10.f};
       std::vector<Cell>     grid{};
@@ -34,13 +29,14 @@ namespace spe
 
     void Run();
     void Initialize(Properties&, const std::string&&);
-    void Tick(Info&, Properties&);
-    void LoadObject(Info&, Properties&, spe::Object&&);
-    void UnloadObject(Info&, Properties&);
-    void DrawObjects(const Info&);
-    void TickObjects(Info&);
-    void Gravity(Info&, const Properties&);
-    void CheckCollisions(Info&);
+    void Tick(Properties&);
+    void LoadObject(Properties&, spe::Object&&);
+    void UnloadObject(Properties&);
+    void DrawObjects(const Properties&);
+    void DrawGrid(const Properties&);
+    void TickObjects(Properties&);
+    void Gravity(Properties&);
+    void CheckCollisions(Properties&);
     void ImpulseResolution(const spe::Object&, const spe::Object&);
     void InitializeGrid(Properties&);
     void UpdateCells(Properties&);
