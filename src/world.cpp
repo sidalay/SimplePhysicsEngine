@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <iostream>
 
 #include "world.hpp"
 
@@ -10,20 +11,19 @@ namespace spe
 
     void Run() 
     {
-      world::Info info{};
-      world::Properties properties{};
-      world::Initialize(properties, "Simple Physics Engine");
+      Properties properties{};
+      Initialize(properties, "Simple Physics Engine");
 
       if (IsWindowReady())  {
         while (!WindowShouldClose()) {
-          spe::world::Tick(info, properties);
+          Tick(properties);
         }
       }
 
       CloseWindow();
     }
 
-    void Initialize(world::Properties& global, const std::string&& title)
+    void Initialize(Properties& global, const std::string&& title)
     {
       SetTraceLogLevel(LOG_WARNING);
       InitWindow(global.dimensions.x, global.dimensions.y, title.c_str());
@@ -31,16 +31,17 @@ namespace spe
       SetTargetFPS(144);
     }
 
-    void Tick(world::Info& info, const world::Properties& global)
+    void Tick(Properties& global)
     {
       // Update
-      info.deltaTime += GetFrameTime();
-      UnloadObject(info, global);
+      global.deltaTime += GetFrameTime();
+      UnloadObject(global);
+      UpdateCells(global);
 
-      if (info.deltaTime > 1.f/144.f) {
-        Gravity(info, global);
-        TickObjects(info);
-        info.deltaTime = 0.f;
+      if (global.deltaTime > 1.f/144.f) {
+        Gravity(global);
+        TickObjects(global);
+        global.deltaTime = 0.f;
 
         if (spe::blend > 1.f || spe::blend < 0.f) {
           spe::direction = -spe::direction;
@@ -48,12 +49,12 @@ namespace spe
         spe::blend += spe::direction;
         
         if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
-          LoadObject(info, {info.instances++, Shape::SQUARE, RigidBody::DYNAMIC, GetMousePosition(), {20.f,20.f}});
+          LoadObject(global, {global.instances++, Shape::SQUARE, RigidBody::DYNAMIC, GetMousePosition(), {20.f,20.f}});
         }
       }
       
       if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)) {
-        LoadObject(info, {info.instances++, Shape::SQUARE, RigidBody::DYNAMIC, GetMousePosition(), {20.f,20.f}});
+        LoadObject(global, {global.instances++, Shape::SQUARE, RigidBody::DYNAMIC, GetMousePosition(), {20.f,20.f}});
       }
 
       if (IsKeyDown(KEY_LEFT_ALT) && IsKeyPressed(KEY_ENTER)) {
@@ -63,14 +64,13 @@ namespace spe
       // Draw
       BeginDrawing();
 
-      for (auto& cell : global.grid) {
-        DrawRectangleLines(cell.area.x, cell.area.y, cell.area.width, cell.area.height, { 255, 255, 255, 100 });
-        DrawText(TextFormat("%i", cell.id), cell.area.x+3, cell.area.y+3, 14, { 255, 255, 255, 100 });
-      }
+      DrawGrid(global);
 
-      DrawObjects(info);
-      // DrawText(TextFormat("# of objects: %i", info.objects.size()), 20, 20, 20, WHITE);
-      // DrawText(TextFormat("# of instances: %i", info.instances), 20, 40, 20, WHITE);
+      DrawText(TextFormat("%i", global.grid.at(0).objects.size()), 20, 20, 40, RED);
+      DrawText(TextFormat("%i", global.grid.at(20).objects.size()), 20, 90, 40, RED);
+
+      DrawObjects(global);
+      // DrawText(TextFormat("# of instances: %i", global.instances), 20, 120, 20, WHITE);
 
       // ------------- Lerp
       // DrawRectangle(spe::Lerp(global.dimensions.x * .05f, global.dimensions.x * .9f, spe::EaseIn(spe::blend)), 100, 20, 20, BLUE);
@@ -89,34 +89,52 @@ namespace spe
       EndDrawing();
     }
 
-    void LoadObject(world::Info& info, spe::Object&& object)
+    void LoadObject(Properties& global, spe::Object&& object)
     {
-      info.objects.emplace_back(object);
+      for (auto& cell : global.grid) {
+        if (LoadCell(cell, object)) {
+          return;
+        }
+      } 
     }
 
-    void UnloadObject(world::Info& info, const world::Properties& global)
+    void UnloadObject(Properties& global)
     {
-      auto it {std::remove_if(info.objects.begin(), info.objects.end(), [&](const Object& object) {
-        return CheckBounds(object, global);
-      })};
-      info.objects.erase(it, info.objects.end());
-    }
-
-    void DrawObjects(const world::Info& info)
-    {
-      for (auto& object : info.objects) {
-        object.Draw();
+      for (auto& cell : global.grid) {
+        auto it {std::remove_if(cell.objects.begin(), cell.objects.end(), [&](const Object& object) {
+          return CheckBounds(object, global);
+        })};
+        cell.objects.erase(it, cell.objects.end());
       }
     }
 
-    void TickObjects(world::Info& info)
+    void DrawObjects(const Properties& global)
     {
-      for (auto& object : info.objects) {
-        object.Tick();
+      for (auto& cell : global.grid) {
+        for (auto& object : cell.objects) {
+          object.Draw();
+        }
       }
     }
 
-    bool CheckBounds(const spe::Object& object, const world::Properties& global)
+    void DrawGrid(const Properties& global)
+    {
+      for (auto& cell : global.grid) {
+        DrawRectangleLines(cell.area.x, cell.area.y, cell.area.width, cell.area.height, { 255, 255, 255, 100 });
+        DrawText(TextFormat("%i", cell.id), cell.area.x+3, cell.area.y+3, 14, { 255, 255, 255, 100 });
+      }
+    }
+
+    void TickObjects(Properties& global)
+    {
+      for (auto& cell : global.grid) {
+        for (auto& object : cell.objects) {
+          object.Tick();
+        }
+      }
+    }
+
+    bool CheckBounds(const Object& object, const Properties& global)
     {
       raylib::Vector2 pos{object.GetPos()};
       if (pos.x < 0 || pos.x > global.dimensions.x || pos.y < 0 || pos.y > global.dimensions.y) {
@@ -125,27 +143,30 @@ namespace spe
       return false;
     }
 
-    void Gravity(world::Info& info, const world::Properties& global)
+    void Gravity(Properties& global)
     {
-      for (auto& object : info.objects) {
-        if (object.GetBody() == RigidBody::DYNAMIC) {
-          object.Push(global.gravity);
+      for (auto& cell : global.grid) {
+        for (auto& object : cell.objects) {
+          if (object.GetBody() == RigidBody::DYNAMIC) {
+            object.Push(global.gravity);
+          }
         }
       }
     }
 
-    void CheckCollisions(world::Info& info)
+    void CheckCollisions(Properties& global)
     {
-      for (int i{}; i < info.objects.size(); ++i) {
-        if (CheckCollisionRecs(info.objects[i].GetRect(), info.objects[i+1].GetRect())) {
-          ImpulseResolution(info.objects[i], info.objects[i+1]);
-        }
-      }
+      // for (int i{}; i < info.objects.size(); ++i) {
+      //   if (CheckCollisionRecs(info.objects[i].GetRect(), info.objects[i+1].GetRect())) {
+      //     ImpulseResolution(info.objects[i], info.objects[i+1]);
+      //   }
+      // }
     }
 
-    void InitializeGrid(world::Properties& global)
+    void InitializeGrid(Properties& global)
     {
       int id{};
+      global.grid.reserve(200);
       for (float y{}; y < global.dimensions.y; y += global.dimensions.y/global.gRowCol.y) {
         for (float x{}; x < global.dimensions.x; x += global.dimensions.x/global.gRowCol.x) {
           global.grid.emplace_back(id++, raylib::Rectangle{x, y, global.dimensions.x/global.gRowCol.x, global.dimensions.y/global.gRowCol.y});
@@ -153,7 +174,153 @@ namespace spe
       }
     }
 
-    void ImpulseResolution(const spe::Object& objone, const spe::Object& objtwo)
+    bool LoadCell(Cell& cell, Object& object)
+    {
+      if (CheckCell(cell, object)) 
+      {
+        cell.objects.emplace_back(object);
+        return true;
+      }
+      return false;
+    }
+
+    void UpdateCells(Properties& global)
+    {
+      for (int y{}; y < global.gRowCol.y; ++y) {
+        for (int x{}; x < global.gRowCol.x; ++x) {
+          int index{x + (y * 10)};
+          for (auto& object : global.grid[index].objects) {
+            // check same cell
+            if (CheckCell(global.grid[index], object)) {
+              return;
+            } else {
+              // potential bug if object goes beyond an adjacent cell within 1 frame?
+              
+              // check adjacent Cells
+              // INNER CELLS
+              if ((x > 0 && y > 0) && (x < global.gRowCol.x && y < global.gRowCol.y)) {
+                if (CheckCell(global.grid[index-21], object)) {
+                  global.grid[index-21].objects.emplace_back(std::move(object));
+                  // need to erase unique_ptr from global.grid[index].objects
+                } else if (CheckCell(global.grid[index-20], object)) {
+                  global.grid[index-20].objects.emplace_back(std::move(object));
+                } else if (CheckCell(global.grid[index-19], object)) {
+                  global.grid[index-19].objects.emplace_back(std::move(object));
+                } else if (CheckCell(global.grid[index-1], object)) {
+                  global.grid[index-1].objects.emplace_back(std::move(object));
+                } else if (CheckCell(global.grid[index+1], object)) {
+                  global.grid[index+1].objects.emplace_back(std::move(object));
+                } else if (CheckCell(global.grid[index+21], object)) {
+                  global.grid[index+21].objects.emplace_back(std::move(object));
+                } else if (CheckCell(global.grid[index+20], object)) {
+                  global.grid[index+20].objects.emplace_back(std::move(object));
+                } else if (CheckCell(global.grid[index+19], object)) {
+                  global.grid[index+19].objects.emplace_back(std::move(object));
+                }
+              } 
+              // CORNER CELLS
+              else if (index == 0) {
+                if (CheckCell(global.grid[index+1], object)) {
+                  global.grid[index+1].objects.emplace_back(std::move(object));
+                } else if (CheckCell(global.grid[index+20], object)) {
+                  global.grid[index+20].objects.emplace_back(std::move(object));
+                } else if (CheckCell(global.grid[index+21], object)) {
+                  global.grid[index+21].objects.emplace_back(std::move(object));
+                }
+              } else if (index == 19) {
+                if (CheckCell(global.grid[index-1], object)) {
+                  global.grid[index-1].objects.emplace_back(std::move(object));
+                } else if (CheckCell(global.grid[index+20], object)) {
+                  global.grid[index+20].objects.emplace_back(std::move(object));
+                } else if (CheckCell(global.grid[index+19], object)) {
+                  global.grid[index+19].objects.emplace_back(std::move(object));
+                }
+              } else if (index == 180) {
+                if (CheckCell(global.grid[index+1], object)) {
+                  global.grid[index+1].objects.emplace_back(std::move(object));
+                } else if (CheckCell(global.grid[index-20], object)) {
+                  global.grid[index-20].objects.emplace_back(std::move(object));
+                } else if (CheckCell(global.grid[index-19], object)) {
+                  global.grid[index-19].objects.emplace_back(std::move(object));
+                }
+              } else if (index == 199) {
+                if (CheckCell(global.grid[index-1], object)) {
+                  global.grid[index-1].objects.emplace_back(std::move(object));
+                } else if (CheckCell(global.grid[index-20], object)) {
+                  global.grid[index-20].objects.emplace_back(std::move(object));
+                } else if (CheckCell(global.grid[index-21], object)) {
+                  global.grid[index-21].objects.emplace_back(std::move(object));
+                }
+              } 
+              // BORDER CELLS
+              else if (y == 0) {
+                if (CheckCell(global.grid[index-1], object)) {
+                  global.grid[index-1].objects.emplace_back(std::move(object));
+                } else if (CheckCell(global.grid[index+1], object)) {
+                  global.grid[index+1].objects.emplace_back(std::move(object));
+                } else if (CheckCell(global.grid[index+19], object)) {
+                  global.grid[index+19].objects.emplace_back(std::move(object));
+                } else if (CheckCell(global.grid[index+20], object)) {
+                  global.grid[index+20].objects.emplace_back(std::move(object));
+                } else if (CheckCell(global.grid[index+21], object)) {
+                  global.grid[index+21].objects.emplace_back(std::move(object));
+                }
+              } else if (y == global.gRowCol.y-1) {
+                if (CheckCell(global.grid[index-1], object)) {
+                  global.grid[index-1].objects.emplace_back(std::move(object));
+                } else if (CheckCell(global.grid[index+1], object)) {
+                  global.grid[index+1].objects.emplace_back(std::move(object));
+                } else if (CheckCell(global.grid[index-19], object)) {
+                  global.grid[index-19].objects.emplace_back(std::move(object));
+                } else if (CheckCell(global.grid[index-20], object)) {
+                  global.grid[index-20].objects.emplace_back(std::move(object));
+                } else if (CheckCell(global.grid[index-21], object)) {
+                  global.grid[index-21].objects.emplace_back(std::move(object));
+                }
+              } else if (x == 0) {
+                if (CheckCell(global.grid[index+1], object)) {
+                  global.grid[index+1].objects.emplace_back(std::move(object));
+                } else if (CheckCell(global.grid[index+20], object)) {
+                  global.grid[index+20].objects.emplace_back(std::move(object));
+                } else if (CheckCell(global.grid[index+21], object)) {
+                  global.grid[index+21].objects.emplace_back(std::move(object));
+                } else if (CheckCell(global.grid[index-20], object)) {
+                  global.grid[index-20].objects.emplace_back(std::move(object));
+                } else if (CheckCell(global.grid[index-19], object)) {
+                  global.grid[index-19].objects.emplace_back(std::move(object));
+                }
+              } else if (x == global.gRowCol.x-1) {
+                if (CheckCell(global.grid[index-1], object)) {
+                  global.grid[index-1].objects.emplace_back(std::move(object));
+                } else if (CheckCell(global.grid[index-20], object)) {
+                  global.grid[index-20].objects.emplace_back(std::move(object));
+                } else if (CheckCell(global.grid[index-21], object)) {
+                  global.grid[index-21].objects.emplace_back(std::move(object));
+                } else if (CheckCell(global.grid[index+20], object)) {
+                  global.grid[index+20].objects.emplace_back(std::move(object));
+                } else if (CheckCell(global.grid[index+19], object)) {
+                  global.grid[index+19].objects.emplace_back(std::move(object));
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    bool CheckCell(Cell& cell, Object& object) 
+    {
+      if ((object.GetPos().x >= cell.area.x) && 
+          (object.GetPos().x <= cell.area.x + cell.area.width) &&
+          (object.GetPos().y >= cell.area.y) && 
+          (object.GetPos().y <= cell.area.y + cell.area.height)) 
+      {
+        return true;
+      }
+      return false;
+    }
+
+    void ImpulseResolution(const Object& objone, const Object& objtwo)
     {
 
     }
