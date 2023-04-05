@@ -4,6 +4,8 @@
 #include "raylib-cpp.hpp"
 #include "lerp.hpp"
 
+#include <vector>
+
 enum class Shape 
 {
   SQUARE, CIRCLE, TRIANGLE
@@ -27,7 +29,7 @@ namespace spe
   class Object 
   {
   public:
-    Object(const uint32_t id, 
+    Object(const uint32_t id,
            const Shape shape, 
            const RigidBody body, 
            raylib::Vector2 pos, 
@@ -36,9 +38,9 @@ namespace spe
     void Tick();
     void Draw() const;
     void Push(const spe::Vector force);
-    [[nodiscard]] RigidBody GetBody() const {return m_body;}
-    [[nodiscard]] raylib::Vector2 GetPos() const {return m_pos;}
-    [[nodiscard]] constexpr int GetId() const {return m_id;}
+    [[nodiscard]] RigidBody         GetBody() const {return m_body;}
+    [[nodiscard]] raylib::Vector2   GetPos()  const {return m_pos;}
+    [[nodiscard]] constexpr int     GetId()   const {return m_id;}
     [[nodiscard]] raylib::Rectangle GetRect() const {return m_rect;}
 
   private:
