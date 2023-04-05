@@ -4,7 +4,7 @@ namespace spe
 {
 
   Object::Object(
-    const uint32_t id, 
+    const uint32_t id,
     const Shape shape,
     const RigidBody body, 
     raylib::Vector2 pos,
@@ -15,7 +15,7 @@ namespace spe
     m_body{body},
     m_pos{pos}, 
     m_size{size},
-    m_rect{pos.x, pos.y, size.x, size.y} 
+    m_rect{pos.x, pos.y, size.x, size.y}
   {
 
   }
