@@ -34,6 +34,11 @@ namespace spe
            const RigidBody body, 
            raylib::Vector2 pos, 
            raylib::Vector2 size);
+    ~Object() = default;
+    Object(const Object&) = delete;
+    Object(Object&&) = default;
+    Object& operator=(const Object&) = delete;
+    Object& operator=(Object&&) = default;
 
     void Tick();
     void Draw() const;
