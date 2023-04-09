@@ -22,7 +22,7 @@ namespace spe
       float                 deltaTime{};
       uint32_t              instances{};
       raylib::Vector2       dimensions{1280.f, 720.f};
-      raylib::Vector2       gRowCol{20.f, 10.f};
+      raylib::Vector2       gRowCol{3.f, 3.f};
       std::vector<Cell>     grid{};
       spe::Vector           gravity{2.f, 180.f};
     };
