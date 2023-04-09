@@ -38,7 +38,7 @@ namespace spe
       UnloadObject(global);
       UpdateCells(global);
 
-      if (global.deltaTime > 1.f/144.f) {
+      if (global.deltaTime > 1.f/24.f) {
         Gravity(global);
         TickObjects(global);
         global.deltaTime = 0.f;
@@ -65,9 +65,6 @@ namespace spe
       BeginDrawing();
 
       DrawGrid(global);
-
-      DrawText(TextFormat("%i", global.grid.at(0).objects.size()), 20, 20, 40, RED);
-      DrawText(TextFormat("%i", global.grid.at(20).objects.size()), 20, 90, 40, RED);
 
       DrawObjects(global);
       // DrawText(TextFormat("# of instances: %i", global.instances), 20, 120, 20, WHITE);
@@ -121,7 +118,8 @@ namespace spe
     {
       for (auto& cell : global.grid) {
         DrawRectangleLines(cell.area.x, cell.area.y, cell.area.width, cell.area.height, { 255, 255, 255, 100 });
-        DrawText(TextFormat("%i", cell.id), cell.area.x+3, cell.area.y+3, 14, { 255, 255, 255, 100 });
+        DrawText(TextFormat("%i", cell.id), cell.area.x+5, cell.area.y+5, 20, { 255, 255, 255, 100 });
+        DrawText(TextFormat("%i", cell.objects.size()), cell.area.x+5, cell.area.y+30, 20, RED);
       }
     }
 
@@ -178,7 +176,7 @@ namespace spe
     {
       if (CheckCell(cell, object)) 
       {
-        cell.objects.emplace_back(object);
+        cell.objects.emplace_back(std::move(object));
         return true;
       }
       return false;
@@ -188,8 +186,9 @@ namespace spe
     {
       for (int y{}; y < global.gRowCol.y; ++y) {
         for (int x{}; x < global.gRowCol.x; ++x) {
-          int index{x + (y * 10)};
-          for (auto& object : global.grid[index].objects) {
+          int index{x + (y * static_cast<int>(global.gRowCol.y))};
+          for (auto it{global.grid[index].objects.begin()}; it != global.grid[index].objects.end(); ++it) {
+            auto& object{*it};
             // check same cell
             if (CheckCell(global.grid[index], object)) {
               return;
@@ -199,57 +198,56 @@ namespace spe
               // check adjacent Cells
               // INNER CELLS
               if ((x > 0 && y > 0) && (x < global.gRowCol.x && y < global.gRowCol.y)) {
-                if (CheckCell(global.grid[index-21], object)) {
-                  global.grid[index-21].objects.emplace_back(std::move(object));
-                  // need to erase unique_ptr from global.grid[index].objects
-                } else if (CheckCell(global.grid[index-20], object)) {
-                  global.grid[index-20].objects.emplace_back(std::move(object));
-                } else if (CheckCell(global.grid[index-19], object)) {
-                  global.grid[index-19].objects.emplace_back(std::move(object));
+                if (CheckCell(global.grid[index-(global.gRowCol.x-1)], object)) {
+                  global.grid[index-(global.gRowCol.x-1)].objects.emplace_back(std::move(object));
+                } else if (CheckCell(global.grid[index-(global.gRowCol.x)], object)) {
+                  global.grid[index-(global.gRowCol.x)].objects.emplace_back(std::move(object));
+                } else if (CheckCell(global.grid[index-(global.gRowCol.x+1)], object)) {
+                  global.grid[index-(global.gRowCol.x+1)].objects.emplace_back(std::move(object));
                 } else if (CheckCell(global.grid[index-1], object)) {
                   global.grid[index-1].objects.emplace_back(std::move(object));
                 } else if (CheckCell(global.grid[index+1], object)) {
                   global.grid[index+1].objects.emplace_back(std::move(object));
-                } else if (CheckCell(global.grid[index+21], object)) {
-                  global.grid[index+21].objects.emplace_back(std::move(object));
-                } else if (CheckCell(global.grid[index+20], object)) {
-                  global.grid[index+20].objects.emplace_back(std::move(object));
-                } else if (CheckCell(global.grid[index+19], object)) {
-                  global.grid[index+19].objects.emplace_back(std::move(object));
+                } else if (CheckCell(global.grid[index+(global.gRowCol.x+1)], object)) {
+                  global.grid[index+(global.gRowCol.x+1)].objects.emplace_back(std::move(object));
+                } else if (CheckCell(global.grid[index+(global.gRowCol.x)], object)) {
+                  global.grid[index+(global.gRowCol.x)].objects.emplace_back(std::move(object));
+                } else if (CheckCell(global.grid[index+(global.gRowCol.x-1)], object)) {
+                  global.grid[index+(global.gRowCol.x-1)].objects.emplace_back(std::move(object));
                 }
               } 
               // CORNER CELLS
               else if (index == 0) {
                 if (CheckCell(global.grid[index+1], object)) {
                   global.grid[index+1].objects.emplace_back(std::move(object));
-                } else if (CheckCell(global.grid[index+20], object)) {
-                  global.grid[index+20].objects.emplace_back(std::move(object));
-                } else if (CheckCell(global.grid[index+21], object)) {
-                  global.grid[index+21].objects.emplace_back(std::move(object));
+                } else if (CheckCell(global.grid[index+(global.gRowCol.x)], object)) {
+                  global.grid[index+(global.gRowCol.x)].objects.emplace_back(std::move(object));
+                } else if (CheckCell(global.grid[index+(global.gRowCol.x+1)], object)) {
+                  global.grid[index+(global.gRowCol.x+1)].objects.emplace_back(std::move(object));
                 }
-              } else if (index == 19) {
+              } else if (index == 2) {
                 if (CheckCell(global.grid[index-1], object)) {
                   global.grid[index-1].objects.emplace_back(std::move(object));
-                } else if (CheckCell(global.grid[index+20], object)) {
-                  global.grid[index+20].objects.emplace_back(std::move(object));
-                } else if (CheckCell(global.grid[index+19], object)) {
-                  global.grid[index+19].objects.emplace_back(std::move(object));
+                } else if (CheckCell(global.grid[index+(global.gRowCol.x)], object)) {
+                  global.grid[index+(global.gRowCol.x)].objects.emplace_back(std::move(object));
+                } else if (CheckCell(global.grid[index+(global.gRowCol.x-1)], object)) {
+                  global.grid[index+(global.gRowCol.x-1)].objects.emplace_back(std::move(object));
                 }
-              } else if (index == 180) {
+              } else if (index == 6) {
                 if (CheckCell(global.grid[index+1], object)) {
                   global.grid[index+1].objects.emplace_back(std::move(object));
-                } else if (CheckCell(global.grid[index-20], object)) {
-                  global.grid[index-20].objects.emplace_back(std::move(object));
-                } else if (CheckCell(global.grid[index-19], object)) {
-                  global.grid[index-19].objects.emplace_back(std::move(object));
+                } else if (CheckCell(global.grid[index-(global.gRowCol.x)], object)) {
+                  global.grid[index-(global.gRowCol.x)].objects.emplace_back(std::move(object));
+                } else if (CheckCell(global.grid[index-(global.gRowCol.x-1)], object)) {
+                  global.grid[index-(global.gRowCol.x-1)].objects.emplace_back(std::move(object));
                 }
-              } else if (index == 199) {
+              } else if (index == 8) {
                 if (CheckCell(global.grid[index-1], object)) {
                   global.grid[index-1].objects.emplace_back(std::move(object));
-                } else if (CheckCell(global.grid[index-20], object)) {
-                  global.grid[index-20].objects.emplace_back(std::move(object));
-                } else if (CheckCell(global.grid[index-21], object)) {
-                  global.grid[index-21].objects.emplace_back(std::move(object));
+                } else if (CheckCell(global.grid[index-(global.gRowCol.x)], object)) {
+                  global.grid[index-(global.gRowCol.x)].objects.emplace_back(std::move(object));
+                } else if (CheckCell(global.grid[index-(global.gRowCol.x+1)], object)) {
+                  global.grid[index-(global.gRowCol.x+1)].objects.emplace_back(std::move(object));
                 }
               } 
               // BORDER CELLS
@@ -258,50 +256,51 @@ namespace spe
                   global.grid[index-1].objects.emplace_back(std::move(object));
                 } else if (CheckCell(global.grid[index+1], object)) {
                   global.grid[index+1].objects.emplace_back(std::move(object));
-                } else if (CheckCell(global.grid[index+19], object)) {
-                  global.grid[index+19].objects.emplace_back(std::move(object));
-                } else if (CheckCell(global.grid[index+20], object)) {
-                  global.grid[index+20].objects.emplace_back(std::move(object));
-                } else if (CheckCell(global.grid[index+21], object)) {
-                  global.grid[index+21].objects.emplace_back(std::move(object));
+                } else if (CheckCell(global.grid[index+(global.gRowCol.x-1)], object)) {
+                  global.grid[index+(global.gRowCol.x-1)].objects.emplace_back(std::move(object));
+                } else if (CheckCell(global.grid[index+(global.gRowCol.x)], object)) {
+                  global.grid[index+(global.gRowCol.x)].objects.emplace_back(std::move(object));
+                } else if (CheckCell(global.grid[index+(global.gRowCol.x+1)], object)) {
+                  global.grid[index+(global.gRowCol.x+1)].objects.emplace_back(std::move(object));
                 }
               } else if (y == global.gRowCol.y-1) {
                 if (CheckCell(global.grid[index-1], object)) {
                   global.grid[index-1].objects.emplace_back(std::move(object));
                 } else if (CheckCell(global.grid[index+1], object)) {
                   global.grid[index+1].objects.emplace_back(std::move(object));
-                } else if (CheckCell(global.grid[index-19], object)) {
-                  global.grid[index-19].objects.emplace_back(std::move(object));
-                } else if (CheckCell(global.grid[index-20], object)) {
-                  global.grid[index-20].objects.emplace_back(std::move(object));
-                } else if (CheckCell(global.grid[index-21], object)) {
-                  global.grid[index-21].objects.emplace_back(std::move(object));
+                } else if (CheckCell(global.grid[index-(global.gRowCol.x-1)], object)) {
+                  global.grid[index-(global.gRowCol.x-1)].objects.emplace_back(std::move(object));
+                } else if (CheckCell(global.grid[index-(global.gRowCol.x)], object)) {
+                  global.grid[index-(global.gRowCol.x)].objects.emplace_back(std::move(object));
+                } else if (CheckCell(global.grid[index-(global.gRowCol.x+1)], object)) {
+                  global.grid[index-(global.gRowCol.x+1)].objects.emplace_back(std::move(object));
                 }
               } else if (x == 0) {
                 if (CheckCell(global.grid[index+1], object)) {
                   global.grid[index+1].objects.emplace_back(std::move(object));
-                } else if (CheckCell(global.grid[index+20], object)) {
-                  global.grid[index+20].objects.emplace_back(std::move(object));
-                } else if (CheckCell(global.grid[index+21], object)) {
-                  global.grid[index+21].objects.emplace_back(std::move(object));
-                } else if (CheckCell(global.grid[index-20], object)) {
-                  global.grid[index-20].objects.emplace_back(std::move(object));
-                } else if (CheckCell(global.grid[index-19], object)) {
-                  global.grid[index-19].objects.emplace_back(std::move(object));
+                } else if (CheckCell(global.grid[index+(global.gRowCol.x)], object)) {
+                  global.grid[index+(global.gRowCol.x)].objects.emplace_back(std::move(object));
+                } else if (CheckCell(global.grid[index+(global.gRowCol.x+1)], object)) {
+                  global.grid[index+(global.gRowCol.x+1)].objects.emplace_back(std::move(object));
+                } else if (CheckCell(global.grid[index-(global.gRowCol.x)], object)) {
+                  global.grid[index-(global.gRowCol.x)].objects.emplace_back(std::move(object));
+                } else if (CheckCell(global.grid[index-(global.gRowCol.x-1)], object)) {
+                  global.grid[index-(global.gRowCol.x-1)].objects.emplace_back(std::move(object));
                 }
               } else if (x == global.gRowCol.x-1) {
                 if (CheckCell(global.grid[index-1], object)) {
                   global.grid[index-1].objects.emplace_back(std::move(object));
-                } else if (CheckCell(global.grid[index-20], object)) {
-                  global.grid[index-20].objects.emplace_back(std::move(object));
-                } else if (CheckCell(global.grid[index-21], object)) {
-                  global.grid[index-21].objects.emplace_back(std::move(object));
-                } else if (CheckCell(global.grid[index+20], object)) {
-                  global.grid[index+20].objects.emplace_back(std::move(object));
-                } else if (CheckCell(global.grid[index+19], object)) {
-                  global.grid[index+19].objects.emplace_back(std::move(object));
+                } else if (CheckCell(global.grid[index-(global.gRowCol.x)], object)) {
+                  global.grid[index-(global.gRowCol.x)].objects.emplace_back(std::move(object));
+                } else if (CheckCell(global.grid[index-(global.gRowCol.x+1)], object)) {
+                  global.grid[index-(global.gRowCol.x+1)].objects.emplace_back(std::move(object));
+                } else if (CheckCell(global.grid[index+(global.gRowCol.x)], object)) {
+                  global.grid[index+(global.gRowCol.x)].objects.emplace_back(std::move(object));
+                } else if (CheckCell(global.grid[index+(global.gRowCol.x-1)], object)) {
+                  global.grid[index+(global.gRowCol.x-1)].objects.emplace_back(std::move(object));
                 }
               }
+              global.grid[index].objects.erase(it--);
             }
           }
         }
