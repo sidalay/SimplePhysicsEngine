@@ -191,17 +191,15 @@ namespace spe
             auto& object{*it};
             // check same cell
             if (CheckCell(global.grid[index], object)) {
-              return;
+              continue;
             } else {
-              // potential bug if object goes beyond an adjacent cell within 1 frame?
-              
               // check adjacent Cells
               // INNER CELLS
               if ((x > 0 && y > 0) && (x < global.gRowCol.x && y < global.gRowCol.y)) {
                 if (CheckCell(global.grid[index-(global.gRowCol.x-1)], object)) {
                   global.grid[index-(global.gRowCol.x-1)].objects.emplace_back(std::move(object));
-                } else if (CheckCell(global.grid[index-(global.gRowCol.x)], object)) {
-                  global.grid[index-(global.gRowCol.x)].objects.emplace_back(std::move(object));
+                } else if (CheckCell(global.grid[index-global.gRowCol.x], object)) {
+                  global.grid[index-global.gRowCol.x].objects.emplace_back(std::move(object));
                 } else if (CheckCell(global.grid[index-(global.gRowCol.x+1)], object)) {
                   global.grid[index-(global.gRowCol.x+1)].objects.emplace_back(std::move(object));
                 } else if (CheckCell(global.grid[index-1], object)) {
@@ -210,8 +208,8 @@ namespace spe
                   global.grid[index+1].objects.emplace_back(std::move(object));
                 } else if (CheckCell(global.grid[index+(global.gRowCol.x+1)], object)) {
                   global.grid[index+(global.gRowCol.x+1)].objects.emplace_back(std::move(object));
-                } else if (CheckCell(global.grid[index+(global.gRowCol.x)], object)) {
-                  global.grid[index+(global.gRowCol.x)].objects.emplace_back(std::move(object));
+                } else if (CheckCell(global.grid[index+global.gRowCol.x], object)) {
+                  global.grid[index+global.gRowCol.x].objects.emplace_back(std::move(object));
                 } else if (CheckCell(global.grid[index+(global.gRowCol.x-1)], object)) {
                   global.grid[index+(global.gRowCol.x-1)].objects.emplace_back(std::move(object));
                 }
