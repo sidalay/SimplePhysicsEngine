@@ -35,13 +35,13 @@ namespace spe
     {
       // Update
       global.deltaTime += GetFrameTime();
-      UnloadObject(global);
-      UpdateCells(global);
 
       if (global.deltaTime > 1.f/24.f) {
+        global.deltaTime = 0.f;
         Gravity(global);
         TickObjects(global);
-        global.deltaTime = 0.f;
+        UnloadObject(global);
+        UpdateCells(global);
 
         if (spe::blend > 1.f || spe::blend < 0.f) {
           spe::direction = -spe::direction;
@@ -186,7 +186,7 @@ namespace spe
     {
       for (int y{}; y < global.gRowCol.y; ++y) {
         for (int x{}; x < global.gRowCol.x; ++x) {
-          int index{x + (y * static_cast<int>(global.gRowCol.y))};
+          int index{x + (y * static_cast<int>(global.gRowCol.x))};
           for (auto it{global.grid[index].objects.begin()}; it != global.grid[index].objects.end(); ++it) {
             auto& object{*it};
             // check same cell
@@ -225,7 +225,7 @@ namespace spe
                 } else if (CheckCell(global.grid[index+(global.gRowCol.x+1)], object)) {
                   global.grid[index+(global.gRowCol.x+1)].objects.emplace_back(std::move(object));
                 }
-              } else if (index == 2) {
+              } else if (index == global.gRowCol.x - 1.f) {
                 if (CheckCell(global.grid[index-1], object)) {
                   global.grid[index-1].objects.emplace_back(std::move(object));
                 } else if (CheckCell(global.grid[index+(global.gRowCol.x)], object)) {
@@ -233,7 +233,7 @@ namespace spe
                 } else if (CheckCell(global.grid[index+(global.gRowCol.x-1)], object)) {
                   global.grid[index+(global.gRowCol.x-1)].objects.emplace_back(std::move(object));
                 }
-              } else if (index == 6) {
+              } else if (index == global.gRowCol.x * (global.gRowCol.y - 1)) {
                 if (CheckCell(global.grid[index+1], object)) {
                   global.grid[index+1].objects.emplace_back(std::move(object));
                 } else if (CheckCell(global.grid[index-(global.gRowCol.x)], object)) {
@@ -241,7 +241,7 @@ namespace spe
                 } else if (CheckCell(global.grid[index-(global.gRowCol.x-1)], object)) {
                   global.grid[index-(global.gRowCol.x-1)].objects.emplace_back(std::move(object));
                 }
-              } else if (index == 8) {
+              } else if (index == (global.gRowCol.x * global.gRowCol.y) - 1.f) {
                 if (CheckCell(global.grid[index-1], object)) {
                   global.grid[index-1].objects.emplace_back(std::move(object));
                 } else if (CheckCell(global.grid[index-(global.gRowCol.x)], object)) {
@@ -251,7 +251,7 @@ namespace spe
                 }
               } 
               // BORDER CELLS
-              else if (y == 0) {
+              else if (y == 0 && (x != 0 && x != global.gRowCol.x - 1)) {
                 if (CheckCell(global.grid[index-1], object)) {
                   global.grid[index-1].objects.emplace_back(std::move(object));
                 } else if (CheckCell(global.grid[index+1], object)) {
