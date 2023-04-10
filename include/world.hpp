@@ -14,7 +14,7 @@ namespace spe
     {
       uint16_t              id{};
       Rectangle             area{};
-      std::vector<Object>   objects;
+      std::vector<Object>   objects{};
     };
   
     struct Properties
