@@ -1,7 +1,7 @@
 #ifndef OBJECT_HPP
 #define OBJECT_HPP
 
-#include "raylib-cpp.hpp"
+#include "raylib.h"
 #include "lerp.hpp"
 
 #include <vector>
@@ -29,11 +29,11 @@ namespace spe
   class Object 
   {
   public:
-    Object(const uint32_t id,
+    Object(const int id,
            const Shape shape, 
            const RigidBody body, 
-           raylib::Vector2 pos, 
-           raylib::Vector2 size);
+           Vector2 pos, 
+           Vector2 size);
     ~Object() = default;
     Object(const Object&) = delete;
     Object(Object&&) = default;
@@ -44,18 +44,18 @@ namespace spe
     void Draw() const;
     void Push(const spe::Vector force);
     [[nodiscard]] RigidBody         GetBody() const {return m_body;}
-    [[nodiscard]] raylib::Vector2   GetPos()  const {return m_pos;}
+    [[nodiscard]] Vector2           GetPos()  const {return m_pos;}
     [[nodiscard]] constexpr int     GetId()   const {return m_id;}
-    [[nodiscard]] raylib::Rectangle GetRect() const {return m_rect;}
+    [[nodiscard]] Rectangle         GetRect() const {return m_rect;}
 
   private:
-    uint32_t            m_id{};
+    int                 m_id{};
     bool                m_colliding{};
     Shape               m_shape{};
     RigidBody           m_body{};
-    raylib::Vector2     m_pos{};
-    raylib::Vector2     m_size{};
-    raylib::Rectangle   m_rect{};
+    Vector2             m_pos{};
+    Vector2             m_size{};
+    Rectangle           m_rect{};
     spe::Scalar         m_mass{};
     spe::Scalar         m_speed{};
     spe::Vector         m_force{};

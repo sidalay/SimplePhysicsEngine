@@ -19,17 +19,6 @@ if (NOT raylib_FOUND)
     endif()
 endif()
 
-find_package(raylib_cpp QUIET)
-if (NOT raylib_cpp_FOUND)
-    include(FetchContent)
-        FetchContent_Declare(
-        raylib_cpp
-        GIT_REPOSITORY https://github.com/RobLoach/raylib-cpp.git
-        GIT_TAG v4.5.0
-    )
-    FetchContent_MakeAvailable(raylib_cpp)
-endif()
-
 add_executable(${PROJECT_NAME}
     src/main.cpp
     src/object.cpp
@@ -37,7 +26,7 @@ add_executable(${PROJECT_NAME}
     src/lerp.cpp
 )
 
-target_link_libraries(${PROJECT_NAME} PRIVATE raylib raylib_cpp)
-target_include_directories(${PROJECT_NAME} PRIVATE include ${raylib_INCLUDE_DIRS} ${raylib_cpp_INCLUDE_DIRS})
+target_link_libraries(${PROJECT_NAME} PRIVATE raylib)
+target_include_directories(${PROJECT_NAME} PRIVATE include ${raylib_INCLUDE_DIRS})
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_20)
 target_compile_options(${PROJECT_NAME} INTERFACE -Wextra -Wall -Wpedantic)

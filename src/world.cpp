@@ -134,7 +134,7 @@ namespace spe
 
     bool CheckBounds(const Object& object, const Properties& global)
     {
-      raylib::Vector2 pos{object.GetPos()};
+      Vector2 pos{object.GetPos()};
       if (pos.x < 0 || pos.x > global.dimensions.x || pos.y < 0 || pos.y > global.dimensions.y) {
         return true;
       }
@@ -167,7 +167,7 @@ namespace spe
       global.grid.reserve(200);
       for (float y{}; y < global.dimensions.y; y += global.dimensions.y/global.gRowCol.y) {
         for (float x{}; x < global.dimensions.x; x += global.dimensions.x/global.gRowCol.x) {
-          global.grid.emplace_back(id++, raylib::Rectangle{x, y, global.dimensions.x/global.gRowCol.x, global.dimensions.y/global.gRowCol.y});
+          global.grid.emplace_back(id++, Rectangle{x, y, global.dimensions.x/global.gRowCol.x, global.dimensions.y/global.gRowCol.y});
         }
       }
     }

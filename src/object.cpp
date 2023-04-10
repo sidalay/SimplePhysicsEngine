@@ -4,11 +4,11 @@ namespace spe
 {
 
   Object::Object(
-    const uint32_t id,
+    const int id,
     const Shape shape,
     const RigidBody body, 
-    raylib::Vector2 pos,
-    raylib::Vector2 size
+    Vector2 pos,
+    Vector2 size
   ) 
   : m_id{id}, 
     m_shape{shape}, 
